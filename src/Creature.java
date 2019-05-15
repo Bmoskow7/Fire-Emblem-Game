@@ -12,8 +12,11 @@ public class Creature
 	int atk;
 	int def;
 	int spd;
+	int xOff=0;
+	int yOff=0;
 	BufferedImage i;
 	boolean select=false;
+	ImageReader water = new ImageReader("Water.png");
 	
 	public Creature(BufferedImage img, int xCoor, int yCoor, int width, int height, int health, int attack, int defense, int speed)
 	{
@@ -38,6 +41,22 @@ public class Creature
 
 	public int getAtk() {
 		return atk;
+	}
+
+	public int getxOff() {
+		return xOff;
+	}
+
+	public void setxOff(int xOff) {
+		this.xOff = xOff;
+	}
+
+	public int getyOff() {
+		return yOff;
+	}
+
+	public void setyOff(int yOff) {
+		this.yOff = yOff;
 	}
 
 	public void setAtk(int atk) {
@@ -107,6 +126,16 @@ public class Creature
 	}
 	public void draw(Graphics g)
 	{
-		g.drawImage(i, x, y, w, h, null);
+		if(select)
+		{
+			for(int i=1;i<4;i++)
+			{
+					g.drawImage(water.getImage(),(x-i)*w,y*h,w,h,null);
+					g.drawImage(water.getImage(),(x+i)*w,y*h,w,h,null);
+					g.drawImage(water.getImage(),x*w,(y-i)*h,w,h,null);
+					g.drawImage(water.getImage(),x*w,(y+i)*h,w,h,null);
+			}
+		}
+		g.drawImage(i, (x+xOff)*w, (y+yOff)*h, w, h, null);
 	}
 }

@@ -28,6 +28,8 @@ public class RPGGame extends GameEngine {
 	int ySize;
 	
 	//tile board object
+	int xOff = 0;
+	int yOff=0;
 	Board b;
 	
 	//health elements for battles
@@ -35,6 +37,7 @@ public class RPGGame extends GameEngine {
 	int eHealth;
 	
 	//Character objects
+	Creature[] creatures;
 	Creature alice;
 	Creature enemy;
 	
@@ -42,11 +45,7 @@ public class RPGGame extends GameEngine {
 	int gameState = 1;
 	
 	//tool to select with space
-	boolean select=false;
-	boolean move=false;
-	boolean moveable=true;
 	
-	Stack moves = new Stack();
 	
 	//Reads all images to be used
 	ImageReader startHealth = new ImageReader("barGreen_horizontalLeft.png");
@@ -66,22 +65,39 @@ public class RPGGame extends GameEngine {
 
 	//This is the what the board reads to make it
 	int[][] arr = {
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,},
-			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,}
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,},
+			
 	};
 
 	//main
@@ -99,49 +115,66 @@ public class RPGGame extends GameEngine {
 		{
 			
 		}*/
-		
 		{
 			//All of these only move if alice is selected
-			if (input.isKeyDown(KeyEvent.VK_RIGHT)&&x<arr.length-1) {
-				x++;
-				if(move)
-					alice.setX(x*xSize);
+			if (input.isKeyDown(KeyEvent.VK_RIGHT)&&x==15&&x+xOff<arr.length-1)
+			{
+				xOff++;
+				b.setxOffset(xOff);
+				alice.setxOff(xOff*-1);
+				enemy.setxOff(xOff*-1);
+			}
+			if (input.isKeyDown(KeyEvent.VK_DOWN)&&y==15&&y+yOff<arr.length-1)
+			{
+				yOff++;
+				b.setyOffset(yOff);
+				alice.setyOff(yOff*-1);
+				enemy.setyOff(yOff*-1);
+			}
+			if (input.isKeyDown(KeyEvent.VK_LEFT)&&x==0)
+			{
+				if(xOff>0)
+				{
+					xOff--;
+					b.setxOffset(xOff);
+					alice.setxOff(xOff*-1);
+					enemy.setxOff(xOff*-1);
+				}
+			}
+			if (input.isKeyDown(KeyEvent.VK_UP)&&y==0)
+			{
+				if(yOff>0)
+				{
+					yOff--;
+					b.setyOffset(yOff);
+					alice.setyOff(yOff*-1);
+					enemy.setyOff(yOff*-1);
+				}
+			}
+			if (input.isKeyDown(KeyEvent.VK_RIGHT)&&x<15) {
+					x++;
 			}
 			if (input.isKeyDown(KeyEvent.VK_LEFT)&&x>0) {
-				x--;
-				if(move)
-					alice.setX(x*xSize);
+					x--;
 			}
-			if (input.isKeyDown(KeyEvent.VK_DOWN)&&y<arr.length-1) {
-				y++;
-				if(move)
-					alice.setY(y*ySize);
+			if (input.isKeyDown(KeyEvent.VK_DOWN)&&y<15) {
+					y++;
 			}
 			if (input.isKeyDown(KeyEvent.VK_UP)&&y>0) {
-				y--;
-				if(move)
-					alice.setY(y*ySize);
+					y--;
 			}
 		
 			//selecting alice by pressing space, need to make menu
-			if(input.isKeyDown(KeyEvent.VK_SPACE) && x*xSize==alice.getX()&&y*ySize==alice.getY())
+			if(input.isKeyDown(KeyEvent.VK_SPACE) && x==alice.getX()&&y==alice.getY())
 			{
 				alice.setSelect(true);
 			}
 			
 			if(alice.isSelect())
 			{
-				if(input.isKeyDown(KeyEvent.VK_SPACE))
-				{
-					alice.setX(x*xSize);
-					alice.setY(y*ySize);
-				}
+				move();
 			}
 			
-			/*else if(!input.isKeyDown(KeyEvent.VK_SPACE))
-			{
-				select=false;
-			}*/
 		}
 		
 	}
@@ -151,12 +184,26 @@ public class RPGGame extends GameEngine {
 	{
 		windowWidth = 1000;
 		windowHeight = 1000;
-		xSize = windowWidth/arr.length;
-		ySize = windowHeight/arr[0].length;
-		b = new Board(arr,windowWidth,windowHeight);
-		alice = new Creature(a.getImage(),x,y,xSize,ySize,100,15,4,43);
-		enemy = new Creature(s.getImage(),3*xSize,3*ySize,xSize,ySize,100,7,2,35);
+		xSize = windowWidth/16;
+		ySize = windowHeight/16;
+		b = new Board(arr,windowWidth,windowHeight,xOff,yOff);
+		alice = new Creature(a.getImage(),0,0,xSize,ySize,100,15,4,43);
+		enemy = new Creature(s.getImage(),3,3,xSize,ySize,100,7,2,35);
 		
+	}
+	
+	void move()
+	{
+		if(input.isKeyDown(KeyEvent.VK_ENTER))
+		{
+			alice.setX(x);
+			alice.setY(y);
+			alice.setSelect(false);
+			if(alice.intersects(enemy))
+			{
+				battle(alice,enemy);
+			}
+		}
 	}
 	
 	//Battle handler
@@ -166,9 +213,10 @@ public class RPGGame extends GameEngine {
 		eHealth=b.getHp();
 		eHealth=eHealth-a.getAtk();
 		pHealth=pHealth-b.getAtk();
-		y--;
-		a.setY(y*ySize);
+		a.setY(y-1);
 		gameState=1;
+		System.out.println(pHealth);
+		System.out.println(eHealth);
 	}
 
 	//draws everything to the screen
@@ -186,20 +234,11 @@ public class RPGGame extends GameEngine {
 			b.draw(g);
 
 			//Draws where she can move with blue squares
-			if(alice.isSelect())
-			{
-				for(int i=1;i<4;i++)
-				{
-						g.drawImage(water.getImage(),(alice.getX()-i)*xSize,alice.getY()*ySize,xSize,ySize,null);
-						g.drawImage(water.getImage(),(alice.getX()+i)*xSize,alice.getY()*ySize,xSize,ySize,null);
-						g.drawImage(water.getImage(),alice.getX()*xSize,(alice.getY()-i)*ySize,xSize,ySize,null);
-						g.drawImage(water.getImage(),alice.getX()*xSize,(alice.getY()+i)*ySize,xSize,ySize,null);
-				}
-			}
+			
 			//draws the cursor, alice, and skeleton
-			g.drawImage(hand.getImage(),x*xSize,y*ySize,xSize/2,ySize/2,null);
 			alice.draw(g);
 			enemy.draw(g);
+			g.drawImage(hand.getImage(),x*xSize+(xSize/4),y*ySize+(ySize/4),xSize/2,ySize/2,null);
 		}
 		
 		//gamestate for battles once implemented
