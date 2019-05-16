@@ -18,7 +18,7 @@ public class InputHandler implements KeyListener {
 
 		return false;
 	}
- 
+
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() > 0 && e.getKeyCode() < 256) {
 			keys[e.getKeyCode()] = true;

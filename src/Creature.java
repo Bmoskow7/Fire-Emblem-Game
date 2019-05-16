@@ -1,26 +1,16 @@
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-
-public class Creature 
-{
-	int x;
-	int y;
-	int h;
-	int w;
-	int hp;
-	int atk;
-	int def;
-	int spd;
-	int xOff=0;
-	int yOff=0;
-	int tempH;
+public class Creature {
+	int x, y, h, w, hp, atk, def, spd, tempH;
+	int xOff = 0;
+	int yOff = 0;
 	BufferedImage i;
-	boolean select=false;
+	boolean select = false;
 	ImageReader water = new ImageReader("Water.png");
-	
-	public Creature(BufferedImage img, int xCoor, int yCoor, int width, int height, int health, int attack, int defense, int speed)
-	{
+
+	public Creature(BufferedImage img, int xCoor, int yCoor, int width, int height, int health, int attack, int defense,
+			int speed) {
 		i = img;
 		x = xCoor;
 		y = yCoor;
@@ -31,17 +21,15 @@ public class Creature
 		def = defense;
 		spd = speed;
 	}
-	
-	public int getTempHP()
-	{
+
+	public int getTempHP() {
 		return tempH;
 	}
-	
-	public void setTempHP(int k)
-	{
-		this.tempH=k;
+
+	public void setTempHP(int k) {
+		this.tempH = k;
 	}
-	
+
 	public int getHp() {
 		return hp;
 	}
@@ -93,60 +81,64 @@ public class Creature
 	public BufferedImage getImage() {
 		return i;
 	}
+
 	public void setImage(BufferedImage i) {
 		this.i = i;
 	}
+
 	public int getX() {
 		return x;
 	}
+
 	public void setX(int x) {
 		this.x = x;
 	}
+
 	public int getY() {
 		return y;
 	}
+
 	public void setY(int y) {
 		this.y = y;
 	}
+
 	public int getHeight() {
 		return h;
 	}
+
 	public void setHeight(int h) {
 		this.h = h;
 	}
+
 	public int getWidth() {
 		return w;
 	}
+
 	public void setWidth(int w) {
 		this.w = w;
 	}
-	public boolean intersects(Creature c)
-	{
-		if(this.x==c.x&&this.y==c.y)
-			return true;
-		else
-			return false;
+
+	public boolean intersects(Creature c) {
+		return (this.x == c.x && this.y == c.y);
 	}
-	public void setSelect(boolean b)
-	{
-		select=b;
+
+	public void setSelect(boolean b) {
+		select = b;
 	}
-	public boolean isSelect()
-	{
+
+	public boolean isSelect() {
 		return select;
 	}
-	public void draw(Graphics g)
-	{
-		if(select)
-		{
-			for(int i=1;i<5;i++)
-			{
-					g.drawImage(water.getImage(),(x-i)*w,y*h,w,h,null);
-					g.drawImage(water.getImage(),(x+i)*w,y*h,w,h,null);
-					g.drawImage(water.getImage(),x*w,(y-i)*h,w,h,null);
-					g.drawImage(water.getImage(),x*w,(y+i)*h,w,h,null);
+
+	public void draw(Graphics g) {
+		if (select) {
+			for (int i = 1; i < 5; i++) {
+				g.drawImage(water.getImage(), (x - i) * w, y * h, w, h, null);
+				g.drawImage(water.getImage(), (x + i) * w, y * h, w, h, null);
+				g.drawImage(water.getImage(), x * w, (y - i) * h, w, h, null);
+				g.drawImage(water.getImage(), x * w, (y + i) * h, w, h, null);
 			}
 		}
-		g.drawImage(i, (x+xOff)*w, (y+yOff)*h, w, h, null);
+		g.drawImage(i, (x + xOff) * w, (y + yOff) * h, w, h, null);
 	}
 }
