@@ -4,20 +4,19 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+public class ImageReader {
 
-public class ImageReader 
-{
 	public BufferedImage img;
-	public ImageReader(String path)
-	{
+
+	public ImageReader(String path) {
 		try {
 			img = ImageIO.read(new File(path));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	public BufferedImage getImage()
-	{
+
+	public BufferedImage getImage() {
 		return img;
 	}
 }
