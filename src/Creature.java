@@ -14,6 +14,7 @@ public class Creature
 	int spd;
 	int xOff=0;
 	int yOff=0;
+	int tempH;
 	BufferedImage i;
 	boolean select=false;
 	ImageReader water = new ImageReader("Water.png");
@@ -29,6 +30,16 @@ public class Creature
 		atk = attack;
 		def = defense;
 		spd = speed;
+	}
+	
+	public int getTempHP()
+	{
+		return tempH;
+	}
+	
+	public void setTempHP(int k)
+	{
+		this.tempH=k;
 	}
 	
 	public int getHp() {
@@ -128,7 +139,7 @@ public class Creature
 	{
 		if(select)
 		{
-			for(int i=1;i<4;i++)
+			for(int i=1;i<5;i++)
 			{
 					g.drawImage(water.getImage(),(x-i)*w,y*h,w,h,null);
 					g.drawImage(water.getImage(),(x+i)*w,y*h,w,h,null);

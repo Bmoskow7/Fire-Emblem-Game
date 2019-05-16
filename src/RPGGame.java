@@ -23,6 +23,12 @@ public class RPGGame extends GameEngine {
 	int x = 0;
 	int y = 0;
 	
+	//Camera moves
+	boolean lMove=true;
+	boolean rMove=true;
+	boolean uMove=true;
+	boolean dMove=true;
+	
 	//Tile sizes
 	int xSize;
 	int ySize;
@@ -43,9 +49,6 @@ public class RPGGame extends GameEngine {
 	
 	//Shows what gamestate we're in
 	int gameState = 1;
-	
-	//tool to select with space
-	
 	
 	//Reads all images to be used
 	ImageReader startHealth = new ImageReader("barGreen_horizontalLeft.png");
@@ -110,28 +113,37 @@ public class RPGGame extends GameEngine {
 
 	//updates the game
 	void update() {
-		//IAN Trying to keep it from going off the screen here
-		/*if(select)
+
+		/*if(alice.isSelect())
 		{
-			
+			if(x>=alice.getX()+4)
+				x=alice.getX()+4;
+			if(x<=alice.getX()-4)
+				x=alice.getX()-4;
+			if(y>=alice.getY()+4)
+				y=alice.getY()+4;
+			if(y<=alice.getY()-4)
+				y=alice.getY()-4;
 		}*/
-		{
 			//All of these only move if alice is selected
-			if (input.isKeyDown(KeyEvent.VK_RIGHT)&&x==15&&x+xOff<arr.length-1)
+		
+		
+
+			if (input.isKeyDown(KeyEvent.VK_RIGHT)&&x==15&&x+xOff<arr.length-1&&rMove)
 			{
 				xOff++;
 				b.setxOffset(xOff);
 				alice.setxOff(xOff*-1);
 				enemy.setxOff(xOff*-1);
 			}
-			if (input.isKeyDown(KeyEvent.VK_DOWN)&&y==15&&y+yOff<arr.length-1)
+			if (input.isKeyDown(KeyEvent.VK_DOWN)&&y==15&&y+yOff<arr.length-1&&dMove)
 			{
 				yOff++;
 				b.setyOffset(yOff);
 				alice.setyOff(yOff*-1);
 				enemy.setyOff(yOff*-1);
 			}
-			if (input.isKeyDown(KeyEvent.VK_LEFT)&&x==0)
+			if (input.isKeyDown(KeyEvent.VK_LEFT)&&x==0&&lMove)
 			{
 				if(xOff>0)
 				{
@@ -141,7 +153,7 @@ public class RPGGame extends GameEngine {
 					enemy.setxOff(xOff*-1);
 				}
 			}
-			if (input.isKeyDown(KeyEvent.VK_UP)&&y==0)
+			if (input.isKeyDown(KeyEvent.VK_UP)&&y==0&&uMove)
 			{
 				if(yOff>0)
 				{
@@ -151,17 +163,54 @@ public class RPGGame extends GameEngine {
 					enemy.setyOff(yOff*-1);
 				}
 			}
-			if (input.isKeyDown(KeyEvent.VK_RIGHT)&&x<15) {
+			if (input.isKeyDown(KeyEvent.VK_RIGHT)&&x<15&&rMove) {
 					x++;
 			}
-			if (input.isKeyDown(KeyEvent.VK_LEFT)&&x>0) {
+			if (input.isKeyDown(KeyEvent.VK_LEFT)&&x>0&&lMove) {
 					x--;
 			}
-			if (input.isKeyDown(KeyEvent.VK_DOWN)&&y<15) {
+			if (input.isKeyDown(KeyEvent.VK_DOWN)&&y<15&&dMove) {
 					y++;
 			}
-			if (input.isKeyDown(KeyEvent.VK_UP)&&y>0) {
+			if (input.isKeyDown(KeyEvent.VK_UP)&&y>0&&uMove) {
 					y--;
+			}
+			
+			if(alice.isSelect())
+			{
+				if(x==alice.getX()+4)
+				{
+					rMove=false;
+				}
+				else
+				{
+					rMove=true;
+				}
+				if(y==alice.getY()+4)
+				{
+					dMove=false;
+				}
+				else
+				{
+					dMove=true;
+				}
+				if(x==alice.getX()-4)
+				{
+					lMove=false;
+				}
+				else
+				{
+					lMove=true;
+				}
+				if(y==alice.getY()-4)
+				{
+					uMove=false;
+				}
+				else
+				{
+					uMove=true;
+				}
+				move();
 			}
 		
 			//selecting alice by pressing space, need to make menu
@@ -170,12 +219,7 @@ public class RPGGame extends GameEngine {
 				alice.setSelect(true);
 			}
 			
-			if(alice.isSelect())
-			{
-				move();
-			}
-			
-		}
+
 		
 	}
 	
@@ -194,6 +238,7 @@ public class RPGGame extends GameEngine {
 	
 	void move()
 	{
+		
 		if(input.isKeyDown(KeyEvent.VK_ENTER))
 		{
 			alice.setX(x);
@@ -203,6 +248,10 @@ public class RPGGame extends GameEngine {
 			{
 				battle(alice,enemy);
 			}
+			dMove=true;
+			uMove=true;
+			lMove=true;
+			rMove=true;
 		}
 	}
 	
