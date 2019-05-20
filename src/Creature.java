@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 
 public class Creature 
 {
+	String name;
 	int x;
 	int y;
 	int h;
@@ -11,7 +12,7 @@ public class Creature
 	int hp;
 	int atk;
 	int def;
-	int spd;
+	int exp=0;
 	int xOff=0;
 	int yOff=0;
 	int tempH;
@@ -19,7 +20,7 @@ public class Creature
 	boolean select=false;
 	ImageReader water = new ImageReader("Water.png");
 	
-	public Creature(BufferedImage img, int xCoor, int yCoor, int width, int height, int health, int attack, int defense, int speed)
+	public Creature(BufferedImage img, String n, int xCoor, int yCoor, int width, int height, int health, int attack, int defense)
 	{
 		i = img;
 		x = xCoor;
@@ -29,7 +30,23 @@ public class Creature
 		hp = health;
 		atk = attack;
 		def = defense;
-		spd = speed;
+		tempH=hp;
+		name=n;
+	}
+	
+	public int getExp()
+	{
+		return exp;
+	}
+	
+	public void setExp(int num)
+	{
+		exp=num;
+	}
+	
+	public String getName()
+	{
+		return name;
 	}
 	
 	public int getTempHP()
@@ -82,14 +99,6 @@ public class Creature
 		this.def = def;
 	}
 
-	public int getSpd() {
-		return spd;
-	}
-
-	public void setSpd(int spd) {
-		this.spd = spd;
-	}
-
 	public BufferedImage getImage() {
 		return i;
 	}
@@ -137,16 +146,11 @@ public class Creature
 	}
 	public void draw(Graphics g)
 	{
-		if(select)
-		{
-			for(int i=1;i<5;i++)
-			{
-					g.drawImage(water.getImage(),(x-i)*w,y*h,w,h,null);
-					g.drawImage(water.getImage(),(x+i)*w,y*h,w,h,null);
-					g.drawImage(water.getImage(),x*w,(y-i)*h,w,h,null);
-					g.drawImage(water.getImage(),x*w,(y+i)*h,w,h,null);
-			}
-		}
 		g.drawImage(i, (x+xOff)*w, (y+yOff)*h, w, h, null);
+	}
+	
+	public String toString()
+	{
+		return(name+"               Health: "+tempH+"/"+hp);
 	}
 }

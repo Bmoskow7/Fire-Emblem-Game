@@ -18,7 +18,7 @@ public class Board
 	int xOffset;
 	int temp;
 	
-	ImageReader grass = new ImageReader("grass.png");
+	ImageReader grass = new ImageReader("grass2.png");
 	ImageReader stone = new ImageReader("rock.png");
 	ImageReader tree = new ImageReader("TreeClear.png");
 	
@@ -82,16 +82,16 @@ public class Board
 			{
 				if(level[i+xOffset][j+yOffset]==1)
 				{
-					g.drawImage(grass.getImage(),i*xSize,j*ySize,xSize,ySize,null);				
+					g.drawImage(grass.getImage(),i*xSize,(j+1)*ySize,xSize,ySize,null);				
 				}
 				if(level[i+xOffset][j+yOffset]==2)
 				{
-					g.drawImage(grass.getImage(),i*xSize,j*ySize,xSize,ySize,null);
-					g.drawImage(tree.getImage(),i*xSize,j*ySize,xSize,ySize,null);
+					g.drawImage(grass.getImage(),i*xSize,(j+1)*ySize,xSize,ySize,null);
+					g.drawImage(tree.getImage(),i*xSize,(j+1)*ySize,xSize,ySize,null);
 				}
 				if(level[i+xOffset][j+yOffset]==3)
 				{
-					g.drawImage(stone.getImage(),i*xSize,j*ySize,xSize,ySize,null);				
+					g.drawImage(stone.getImage(),i*xSize,(j+1)*ySize,xSize,ySize,null);				
 				}
 		}
 	}

@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -11,17 +12,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 
 public class RPGGame extends GameEngine {
-
-	//Not used, used to change directions
-	static final int UP = 0;
-	static final int RIGHT = 1;
-	static final int DOWN = 2;
-	static final int LEFT = 3;
-	int dir = -1;
 	
 	//x and y coordinates for selector
 	int x = 0;
-	int y = 0;
+	int y = 1;
 	
 	//Camera moves
 	boolean lMove=true;
@@ -38,14 +32,12 @@ public class RPGGame extends GameEngine {
 	int yOff=0;
 	Board b;
 	
-	//health elements for battles
-	int pHealth;
-	int eHealth;
-	
 	//Character objects
-	Creature[] creatures;
-	Creature alice;
-	Creature enemy;
+	Font times = new Font("TimesRoman", Font.PLAIN, xSize/3);
+	ArrayList<Creature> friends = new ArrayList<Creature>();
+	ArrayList<Creature> enemies = new ArrayList<Creature>();
+	Creature alice,enemy,tim;
+	Creature current;
 	
 	//Shows what gamestate we're in
 	int gameState = 1;
@@ -62,8 +54,9 @@ public class RPGGame extends GameEngine {
 	ImageReader grass = new ImageReader("grass.png");
 	ImageReader water = new ImageReader("Water.png");
 	ImageReader lava = new ImageReader("Lava.png");
-	ImageReader butn = new ImageReader("buttonLong_blue.png");
+	ImageReader butn = new ImageReader("buttonLong_beige.png");
 	ImageReader hand = new ImageReader("cursorGauntlet_bronze.png");
+	ImageReader t = new ImageReader("Tim.png");
 	
 
 	//This is the what the board reads to make it
@@ -113,22 +106,8 @@ public class RPGGame extends GameEngine {
 
 	//updates the game
 	void update() {
-
-		/*if(alice.isSelect())
-		{
-			if(x>=alice.getX()+4)
-				x=alice.getX()+4;
-			if(x<=alice.getX()-4)
-				x=alice.getX()-4;
-			if(y>=alice.getY()+4)
-				y=alice.getY()+4;
-			if(y<=alice.getY()-4)
-				y=alice.getY()-4;
-		}*/
-			//All of these only move if alice is selected
 		
 		
-
 			if (input.isKeyDown(KeyEvent.VK_RIGHT)&&x==15&&x+xOff<arr.length-1&&rMove)
 			{
 				xOff++;
@@ -153,7 +132,7 @@ public class RPGGame extends GameEngine {
 					enemy.setxOff(xOff*-1);
 				}
 			}
-			if (input.isKeyDown(KeyEvent.VK_UP)&&y==0&&uMove)
+			if (input.isKeyDown(KeyEvent.VK_UP)&&y==1&&uMove)
 			{
 				if(yOff>0)
 				{
@@ -172,100 +151,114 @@ public class RPGGame extends GameEngine {
 			if (input.isKeyDown(KeyEvent.VK_DOWN)&&y<15&&dMove) {
 					y++;
 			}
-			if (input.isKeyDown(KeyEvent.VK_UP)&&y>0&&uMove) {
+			if (input.isKeyDown(KeyEvent.VK_UP)&&y>1&&uMove) {
 					y--;
 			}
-			
-			if(alice.isSelect())
+			int index=0;
+			while(index<friends.size())
 			{
-				if(x==alice.getX()+4)
+				if(input.isKeyDown(KeyEvent.VK_SPACE) && x==friends.get(index).getX()&&y==friends.get(index).getY())
 				{
-					rMove=false;
+					friends.get(index).setSelect(true);
 				}
-				else
+				if(friends.get(index).isSelect())
 				{
-					rMove=true;
+					if(x==friends.get(index).getX()+4)
+					{
+						rMove=false;
+					}
+					else
+					{
+						rMove=true;
+					}
+					if(y==friends.get(index).getY()+4)
+					{
+						dMove=false;
+					}
+					else
+					{
+						dMove=true;
+					}
+					if(x==friends.get(index).getX()-4)
+					{
+						lMove=false;
+					}
+					else
+					{
+						lMove=true;
+					}
+					if(y==friends.get(index).getY()-4)
+					{
+						uMove=false;
+					}
+					else
+					{
+						uMove=true;
+					}
+					move(friends.get(index));
 				}
-				if(y==alice.getY()+4)
-				{
-					dMove=false;
-				}
-				else
-				{
-					dMove=true;
-				}
-				if(x==alice.getX()-4)
-				{
-					lMove=false;
-				}
-				else
-				{
-					lMove=true;
-				}
-				if(y==alice.getY()-4)
-				{
-					uMove=false;
-				}
-				else
-				{
-					uMove=true;
-				}
-				move();
+				index++;
 			}
-		
-			//selecting alice by pressing space, need to make menu
-			if(input.isKeyDown(KeyEvent.VK_SPACE) && x==alice.getX()&&y==alice.getY())
-			{
-				alice.setSelect(true);
-			}
-			
-
 		
 	}
 	
 	//Plugging values into variables
 	void init()
 	{
-		windowWidth = 1000;
-		windowHeight = 1000;
+		windowWidth = 1040;
+		windowHeight = 1040;
 		xSize = windowWidth/16;
 		ySize = windowHeight/16;
 		b = new Board(arr,windowWidth,windowHeight,xOff,yOff);
-		alice = new Creature(a.getImage(),0,0,xSize,ySize,100,15,4,43);
-		enemy = new Creature(s.getImage(),3,3,xSize,ySize,100,7,2,35);
+		alice = new Creature(a.getImage(),"Alice",0,1,xSize,ySize,100,15,4);
+		enemy = new Creature(s.getImage(),"Skeleton",3,3,xSize,ySize,100,7,2);
+		tim = new Creature(t.getImage(),"Tim",6,5,xSize,ySize,100,10,5);
+		friends.add(alice);
+		friends.add(tim);
+		enemies.add(enemy);
+	}
+	
+	void offset(Creature c)
+	{
 		
 	}
 	
-	void move()
+	void select(Creature c)
+	{
+		if(input.isKeyDown(KeyEvent.VK_SPACE)&&x==c.getX()&&y==c.getY())
+		{
+			
+		}
+	}
+	
+	void move(Creature c)
 	{
 		
 		if(input.isKeyDown(KeyEvent.VK_ENTER))
 		{
-			alice.setX(x);
-			alice.setY(y);
-			alice.setSelect(false);
-			if(alice.intersects(enemy))
-			{
-				battle(alice,enemy);
-			}
+			c.setX(x);
+			c.setY(y);
+			c.setSelect(false);
 			dMove=true;
 			uMove=true;
 			lMove=true;
 			rMove=true;
+		}
+		else if(input.isKeyDown(KeyEvent.VK_ESCAPE))
+		{
+			c.setSelect(false);
 		}
 	}
 	
 	//Battle handler
 	void battle(Creature a, Creature b)
 	{
-		pHealth=a.getHp();
-		eHealth=b.getHp();
-		eHealth=eHealth-a.getAtk();
-		pHealth=pHealth-b.getAtk();
+		b.setTempHP(b.getTempHP()-a.getAtk());
+		if(b.getTempHP()>0)
+		{
+			a.setTempHP(a.getTempHP()-b.getAtk());
+		}
 		a.setY(y-1);
-		gameState=1;
-		System.out.println(pHealth);
-		System.out.println(eHealth);
 	}
 
 	//draws everything to the screen
@@ -279,24 +272,50 @@ public class RPGGame extends GameEngine {
 		
 		if(gameState==1)
 		{
+			
 			//Draws the board
 			b.draw(g);
 
 			//Draws where she can move with blue squares
 			
 			//draws the cursor, alice, and skeleton
-			alice.draw(g);
-			enemy.draw(g);
+			for(int i=0;i<friends.size();i++)
+			{
+				friends.get(i).draw(g);
+				if(x==friends.get(i).getX()&&y==friends.get(i).getY())
+				{
+					g.setFont(new Font("TimesRoman", Font.PLAIN, xSize/3));
+					g.setColor(Color.BLACK);
+					g.drawString(alice.toString(), xSize/2, ySize/2);
+				}
+			}
+			//alice.draw(g);
+			//enemy.draw(g);
 			g.drawImage(hand.getImage(),x*xSize+(xSize/4),y*ySize+(ySize/4),xSize/2,ySize/2,null);
+			g.setColor(Color.BLUE);
+			g.drawRect(x*xSize, y*ySize, xSize, ySize);
+			g.drawImage(butn.getImage(),0,0,xSize*16,ySize,null);
+			/*if(x==alice.getX()&&y==alice.getY())
+			{
+				g.setFont(new Font("TimesRoman", Font.PLAIN, xSize/3));
+				g.setColor(Color.BLACK);
+				g.drawString(alice.toString(), xSize/2, ySize/2);
+			}
+			if(x==enemy.getX()&&y==enemy.getY())
+			{
+				g.setFont(new Font("TimesRoman", Font.PLAIN, xSize/3));
+				g.setColor(Color.BLACK);
+				g.drawString(enemy.toString(), xSize/2, ySize/2);
+			}*/
 		}
 		
 		//gamestate for battles once implemented
 		else if(gameState==2)
 		{
-			int p1x=200;
-			int p1y=500;
-			int p2x=500;
-			int p2y=200;
+			int p1x=100;
+			int p1y=650;
+			int p2x=650;
+			int p2y=100;
 			int size = alice.getWidth()*5;
 			
 			
